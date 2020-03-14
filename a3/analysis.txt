@@ -1,0 +1,40 @@
+Usage:
+python3 analysis.py -p [trace file path] -o [output file path]
+
+Simple Loop:
+Counts:
+Instructions 120406
+Loads        50090
+Stores       10063
+Modifies     10006
+
+For instructions, page 0x108000 is accessed the most, with 120026 times.
+Most of the instructions are stored in the same page, which each iterations has 12 instructions access.
+
+For data, page 0x1fff000000 is accessed the most, with 60100 times, which the page is stored in stack memory. We think the page access are occurred due to the 10000 iterations of for loop. In each iteration, 5 loads are occurred, such as, loading i, loading ptr and loading iters; 1 store occurred for storing i into heap, 1 modify for increment i.
+
+Blocked:
+Counts:
+  Instructions 51791748
+  Loads        21578983
+  Stores       1283021
+  Modifies     1091709
+
+For instruction, 0x108000 are accessed 5375918 times and 0x109000 are accessed 45292495, which are caused by the huge amount of instructions by for loop, basic arithmetic operations.
+
+The matrices are divided to blocks to perform the matrix multiplication. 
+For data, 0x1fff000000 accessed most of the time, which accounts for the for-loop condition checking and variable incrementing, as well as all the global variables.
+Aside from this, most of the remaining page access has a pattern, so we speculate that they account for matrix element access and computation.
+Also 0x501c000, 0x5019000, and 0x4068000 all access for ~40k times, they could be the address of the starting address of the three matrices.
+
+
+Matmul:
+Counts:
+  Instructions 47473963
+  Loads        21491394
+  Stores       1180752
+  Modifies     1060125
+
+For instruction, 0x108000 is accessed 46491024 time, which we believe are the basic arithmetic operation, variable assignment, conditional statements, go-to statement and iterations.
+
+For data, 0x1fff00000 which is accessed 10301223 times. The stack memory is accessed this many of times due to accessing i, j, k loop incrementing indices, and accessing global variables like, n, and matrices A, B, C pointers. And the heap memory 0x30a000 is accessed 9040220 times, which is due to access A[], B[] and C[] to initialize the integers in the matrices, multiplication and printing.
